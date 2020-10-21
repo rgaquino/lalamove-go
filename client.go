@@ -36,7 +36,7 @@ func NewClient(options ...ClientOption) (*Client, error) {
 			return nil, err
 		}
 	}
-	if strings.TrimSpace(c.apiKey) == "" {
+	if strings.TrimSpace(c.apiKey) == "" || strings.TrimSpace(c.secret) == "" {
 		return nil, errCredentialsMissing
 	}
 	if strings.TrimSpace(c.baseURL) == "" {
@@ -136,16 +136,11 @@ func (c *Client) do(ctx context.Context, req *http.Request) (*http.Response, err
 }
 
 func (c *Client) generateAuth(method, path string, body []byte) string {
-	now := time.Now().Unix()
-
-	bodyStr := string(body)
-	//bodyStr = strconv.Quote(bodyStr)
-	rawSignature := fmt.Sprintf("%d\r\n%s\r\n%s\r\n\r\n%s", now, method, path, bodyStr)
-
+	now := time.Now().UnixNano() / int64(time.Millisecond)
+	rawSignature := fmt.Sprintf("%d\r\n%s\r\n%s\r\n\r\n%s", now, method, path, string(body))
 	mac := hmac.New(sha256.New, []byte(c.secret))
 	mac.Write([]byte(rawSignature))
 	signature := hex.EncodeToString(mac.Sum(nil))
-
 	return fmt.Sprintf("hmac %s:%d:%s", c.apiKey, now, signature)
 }
 

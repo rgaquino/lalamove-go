@@ -162,7 +162,7 @@ type GetQuotationRequest struct {
 
 // GetQuotationResponse ...
 type GetQuotationResponse struct {
-	AmountCents int64  `json:"totalFee"`
+	AmountCents string `json:"totalFee"`
 	Currency    string `json:"totalFeeCurrency"`
 }
 
