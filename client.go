@@ -91,12 +91,12 @@ func (c *Client) get(ctx context.Context, path string, body interface{}, apiResp
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode >= 300 {
+	if resp.StatusCode == 409 {
 		errResp := &ErrorResponse{}
 		if err := json.NewDecoder(resp.Body).Decode(errResp); err != nil {
 			return err
 		}
-		return c.wrapAPIError(errResp)
+		return wrapAPIError(errResp)
 	}
 	return json.NewDecoder(resp.Body).Decode(apiResp)
 }
@@ -122,12 +122,14 @@ func (c *Client) post(ctx context.Context, path string, body interface{}, apiRes
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode >= 300 {
+	if resp.StatusCode == 409 {
 		errResp := &ErrorResponse{}
 		if err := json.NewDecoder(resp.Body).Decode(errResp); err != nil {
 			return err
 		}
-		return c.wrapAPIError(errResp)
+		return wrapAPIError(errResp)
+	} else if resp.StatusCode == 429 {
+		return apiErrTooManyRequests
 	}
 	return json.NewDecoder(resp.Body).Decode(apiResp)
 }
@@ -138,23 +140,4 @@ func (c *Client) do(ctx context.Context, req *http.Request) (*http.Response, err
 		client = http.DefaultClient
 	}
 	return client.Do(req.WithContext(ctx))
-}
-
-var (
-	apiErrUnknownError       = errors.New("ERR_UNKNOWN")
-	apiErrInsufficientCredit = errors.New("ERR_INSUFFICIENT_CREDIT")
-	apiErrInvalidCurrency    = errors.New("ERR_INVALID_CURRENCY")
-	apiErrPriceMismatch      = errors.New("ERR_PRICE_MISMATCH")
-)
-
-func (c *Client) wrapAPIError(errResp *ErrorResponse) error {
-	switch errResp.Error {
-	case "ERR_INSUFFICIENT_CREDIT":
-		return apiErrInsufficientCredit
-	case "ERR_INVALID_CURRENCY":
-		return apiErrInvalidCurrency
-	case "ERR_PRICE_MISMATCH":
-		return apiErrPriceMismatch
-	}
-	return apiErrUnknownError
 }
