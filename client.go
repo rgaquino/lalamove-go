@@ -5,6 +5,7 @@ import (
 	"context"
 	"crypto/hmac"
 	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -34,12 +35,12 @@ func NewClient(options ...ClientOption) (*Client, error) {
 		if err != nil {
 			return nil, err
 		}
-		if strings.TrimSpace(c.apiKey) == "" {
-			return nil, errCredentialsMissing
-		}
-		if strings.TrimSpace(c.baseURL) == "" {
-			return nil, errBaseURLMissing
-		}
+	}
+	if strings.TrimSpace(c.apiKey) == "" {
+		return nil, errCredentialsMissing
+	}
+	if strings.TrimSpace(c.baseURL) == "" {
+		return nil, errBaseURLMissing
 	}
 	return c, nil
 }
@@ -59,6 +60,14 @@ func WithHTTPClient(c *http.Client) ClientOption {
 func WithAPIKey(apiKey string) ClientOption {
 	return func(c *Client) error {
 		c.apiKey = apiKey
+		return nil
+	}
+}
+
+// WithSecret configures a Lalamove API client with a secret
+func WithSecret(secret string) ClientOption {
+	return func(c *Client) error {
+		c.secret = secret
 		return nil
 	}
 }
@@ -87,7 +96,7 @@ func (c *Client) get(ctx context.Context, region UNLOCODE, path string, apiReq i
 
 	resp, err := c.do(ctx, req)
 	if err != nil {
-		return nil
+		return err
 	}
 	defer resp.Body.Close()
 
@@ -111,7 +120,7 @@ func (c *Client) post(ctx context.Context, region UNLOCODE, path string, apiReq 
 
 	resp, err := c.do(ctx, req)
 	if err != nil {
-		return nil
+		return err
 	}
 	defer resp.Body.Close()
 
@@ -128,15 +137,20 @@ func (c *Client) do(ctx context.Context, req *http.Request) (*http.Response, err
 
 func (c *Client) generateAuth(method, path string, body []byte) string {
 	now := time.Now().Unix()
-	rawSignature := fmt.Sprintf("%d\r\n%s\r\n%s\r\n\r\n%s", now, method, path, body)
-	mac := hmac.New(sha256.New, []byte(rawSignature))
-	mac.Write([]byte(c.secret))
-	signature := mac.Sum(nil)
+
+	bodyStr := string(body)
+	//bodyStr = strconv.Quote(bodyStr)
+	rawSignature := fmt.Sprintf("%d\r\n%s\r\n%s\r\n\r\n%s", now, method, path, bodyStr)
+
+	mac := hmac.New(sha256.New, []byte(c.secret))
+	mac.Write([]byte(rawSignature))
+	signature := hex.EncodeToString(mac.Sum(nil))
+
 	return fmt.Sprintf("hmac %s:%d:%s", c.apiKey, now, signature)
 }
 
 func marshalRequest(apiReq interface{}) (io.Reader, []byte, error) {
-	if apiReq != nil {
+	if apiReq == nil {
 		return nil, nil, nil
 	}
 	body, err := json.Marshal(apiReq)
@@ -149,12 +163,16 @@ func marshalRequest(apiReq interface{}) (io.Reader, []byte, error) {
 func decodeResponse(resp *http.Response, apiResp interface{}) error {
 	if resp.StatusCode == 429 {
 		return apiErrTooManyRequests
-	} else if resp.StatusCode >= 400 {
+	} else if resp.StatusCode == 401 {
+		return apiErrUnauthorized
+	} else if resp.StatusCode == 402 || resp.StatusCode == 409 {
 		errResp := &ErrorResponse{}
 		if err := json.NewDecoder(resp.Body).Decode(errResp); err != nil {
 			return err
 		}
 		return wrapAPIError(errResp)
+	} else if resp.StatusCode >= 400 {
+		return apiErrUnknownError
 	}
 	return json.NewDecoder(resp.Body).Decode(apiResp)
 }

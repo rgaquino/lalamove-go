@@ -46,8 +46,10 @@ var (
 	apiErrPriceMismatch = errors.New("ERR_PRICE_MISMATCH")
 	// apiErrCancellationForbidden - Cancellation Forbidden
 	apiErrCancellationForbidden = errors.New("ERR_CANCELLATION_FORBIDDEN")
-	// apiErrTooManyRequests - Too many requests were made.
+	// apiErrTooManyRequests - Too many requests were made
 	apiErrTooManyRequests = errors.New("ERR_TOO_MANY_REQUESTS")
+	// apiErrUnauthorized - The provided authorization token is wrong
+	apiErrUnauthorized = errors.New("ERR_UNAUTHORIZED")
 )
 
 func wrapAPIError(errResp *ErrorResponse) error {

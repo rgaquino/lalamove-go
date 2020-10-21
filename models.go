@@ -104,9 +104,9 @@ const (
 // Address ...
 type Address struct {
 	// DisplayString is the street address in plain text. Use remarks in DeliveryInfo for building, floor and flat.
-	DisplayString string
+	DisplayString string `json:"displayString"`
 	// Country is the country code of the address and must match with X-LLM-Country in the request headers.
-	Country string
+	Country string `json:"country"`
 }
 
 // Location ...
@@ -119,8 +119,8 @@ type Location struct {
 
 // Waypoint ...
 type Waypoint struct {
-	Location  Location
-	Addresses map[Locale]Address
+	Location  Location           `json:"location"`
+	Addresses map[Locale]Address `json:"addresses"`
 }
 
 // DeliveryInfo ...
