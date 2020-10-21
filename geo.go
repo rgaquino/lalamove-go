@@ -6,7 +6,7 @@ type Country struct {
 	ISOCode    ISOCode
 	UNLOCODE   []UNLOCODE
 	PhoneRegex string
-	LocaleKeys []Locale
+	Locales    []Locale
 }
 
 // UNLOCODE is the UN/LOCODE of supported countries and regions.
@@ -98,66 +98,77 @@ var (
 		ISOCode:    ISOCodeBrasil,
 		UNLOCODE:   []UNLOCODE{UNLOCODEBrasilSaoPaulo, UNLOCODEBrasilRioDeJaneiro},
 		PhoneRegex: "^[0-9]{2}[9]{1}[0-9]{8}$",
+		Locales:    []Locale{LocaleBrasilEN, LocaleBrasilPT},
 	}
 	CountryHongKong = Country{
 		Name:       "Hong Kong",
 		ISOCode:    ISOCodeBrasil,
 		UNLOCODE:   []UNLOCODE{UNLOCODEHongKongHongKong},
 		PhoneRegex: "^((?!999)([2-9][0-9]{7}))$",
+		Locales:    []Locale{LocaleHongKongEN, LocaleHongKongZH},
 	}
 	CountryIndia = Country{
 		Name:       "India",
 		ISOCode:    ISOCodeIndia,
 		UNLOCODE:   []UNLOCODE{UNLOCODEIndiaBengaluru, UNLOCODEIndiaMumbai, UNLOCODEIndiaDelhi},
 		PhoneRegex: "^([6-9][0-9]{9}|22[0-9]{8})$",
+		Locales:    []Locale{LocaleIndiaEN, LocaleIndiaHI, LocaleIndiaKN, LocaleIndiaMR},
 	}
 	CountryIndonesia = Country{
 		Name:       "Indonesia",
 		ISOCode:    ISOCodeIndonesia,
 		UNLOCODE:   []UNLOCODE{UNLOCODEIndonesiaJakarata},
 		PhoneRegex: "^0(8\\d{8,11}|21\\d{7,8})$",
+		Locales:    []Locale{LocaleIndonesiaEN, LocaleIndonesiaID},
 	}
 	CountryMalaysia = Country{
 		Name:       "Malaysia",
 		ISOCode:    ISOCodeMalaysia,
 		UNLOCODE:   []UNLOCODE{UNLOCODEMalaysiaKualaLumpur},
 		PhoneRegex: "^0(1[1,5]?\\d{8}|[4-7,9]\\d{7}|8[2-9]\\d{6}|3\\d{8})$",
+		Locales:    []Locale{LocaleMalaysiaEN, LocaleMalaysiaMS},
 	}
 	CountryMexico = Country{
 		Name:       "Mexico",
 		ISOCode:    ISOCodeMexico,
 		UNLOCODE:   []UNLOCODE{UNLOCODEMexicoMexico},
 		PhoneRegex: "^([+]+52?)?(\\d{3}?){2}\\d{4}$",
+		Locales:    []Locale{LocaleMexicoEN, LocaleMexicoMX},
 	}
 	CountryPhilippines = Country{
 		Name:       "Philippines",
 		ISOCode:    ISOCodePhilippines,
 		UNLOCODE:   []UNLOCODE{UNLOCODEPhilippinesManila, UNLOCODEPhilippinesCebu},
 		PhoneRegex: "^09[0-9]{9}$|^0?2[0-9]{7}$|^0?32[0-9]{7}$",
+		Locales:    []Locale{LocalePhilippinesEN},
 	}
 	CountrySingapore = Country{
 		Name:       "Singapore",
 		ISOCode:    ISOCodeSingapore,
 		UNLOCODE:   []UNLOCODE{UNLOCODESingaporeSingapore},
 		PhoneRegex: "^[689]{1}[0-9]{7}$",
+		Locales:    []Locale{LocaleSingaporeEN},
 	}
 	CountryTaiwan = Country{
 		Name:       "Taiwan",
 		ISOCode:    ISOCodeTaiwan,
 		UNLOCODE:   []UNLOCODE{UNLOCODETaiwanTaipei},
 		PhoneRegex: "^0([1-8]{1}[0-9]{7,8}|9[0-9]{8})$",
+		Locales:    []Locale{LocaleTaiwanZH},
 	}
 	CountryThailand = Country{
 		Name:       "Thailand",
 		ISOCode:    ISOCodeThailand,
 		UNLOCODE:   []UNLOCODE{UNLOCODEThailandBangkok, UNLOCODEThailandPattaya},
 		PhoneRegex: "^(0[0-9]{8,9}|[0-9]{4})$",
+		Locales:    []Locale{LocaleThailandEN, LocaleThailandTH},
 	}
 	CountryVietnam = Country{
 		Name:       "Vietnam",
 		ISOCode:    ISOCodeVietnam,
 		UNLOCODE:   []UNLOCODE{UNLOCODEVietnamHoChiMinh, UNLOCODEVietnamHanoi},
 		PhoneRegex: "^0?(2|[35789])[0-9]{8}$|^02[48][0-9]{8}$",
+		Locales:    []Locale{LocaleVietnamEN, LocaleVietnamVI},
 	}
 )
 
