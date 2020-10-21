@@ -1,36 +1,135 @@
 package lalamove
 
+import "time"
+
+// ServiceType is the range of vehicles that Lalamove provides to cater to different needs at different cities.
 type ServiceType string
 
+// ServiceType enum
+const (
+	ServiceTypeCar          ServiceType = "CAR"
+	ServiceTypeLalago       ServiceType = "LALAGO"
+	ServiceTypeLalapro      ServiceType = "LALAPRO"
+	ServiceTypeMinivan      ServiceType = "MINIVAN"
+	ServiceTypeMotorcycle   ServiceType = "MOTORCYCLE"
+	ServiceTypeMPV          ServiceType = "MPV"
+	ServiceTypeTataAce7     ServiceType = "TATA7FT"
+	ServiceTypeTataAce8     ServiceType = "TATA8FT"
+	ServiceTypeThreeWheeler ServiceType = "THREE_WHEELER"
+	ServiceTypeTruck175     ServiceType = "TRUCK175"
+	ServiceTypeTruck330     ServiceType = "TRUCK330"
+	ServiceTypeTruck550     ServiceType = "TRUCK550"
+	ServiceTypeUV           ServiceType = "UV_FIORINO"
+	ServiceTypeVan          ServiceType = "VAN"
+	ServiceType4x4          ServiceType = "4X4"
+)
+
+// SpecialRequest ...
 type SpecialRequest string
 
-type Locale string
+// SpecialRequest enum
+const (
+	SpecialRequest1HelperTier1             SpecialRequest = "1HELPER_TIER1"
+	SpecialRequest1HelperTier2             SpecialRequest = "1HELPER_TIER3"
+	SpecialRequest1HelperTier3             SpecialRequest = "1HELPER_TIER2"
+	SpecialRequestAddAssistantTier1        SpecialRequest = "ADDITIONAL_ASSISTANT_TIER1"
+	SpecialRequestAddAssistantTier2        SpecialRequest = "ADDITIONAL_ASSISTANT_TIER2"
+	SpecialRequestAddAssistantTier3        SpecialRequest = "ADDITIONAL_ASSISTANT_TIER3"
+	SpecialRequestInsulatedBag             SpecialRequest = "INSULATED_BAG"
+	SpecialRequestUVVan                    SpecialRequest = "UV_VAN"
+	SpecialRequestLalabag                  SpecialRequest = "LALABAG"
+	SpecialRequestLalabagBig               SpecialRequest = "LALABAG_BIG"
+	SpecialRequestDoor2Door                SpecialRequest = "DOOR2DOOR"
+	SpecialRequestDoor2DoorDriver          SpecialRequest = "DOOR2DOOR_DRIVER"
+	SpecialRequestDoor2DoorTruck330        SpecialRequest = "DOOR2DOOR_TRUCK330"
+	SpecialRequestDoor2DoorTruck550        SpecialRequest = "DOOR2DOOR_TRUCK550"
+	SpecialRequestDoor2Door1HelperTruck175 SpecialRequest = "DOOR2DOOR_1HELPER_TRUCK175"
+	SpecialRequestDoor2Door1HelperTruck330 SpecialRequest = "DOOR2DOOR_1HELPER_TRUCK330"
+	SpecialRequestDoor2Door1HelperTruck550 SpecialRequest = "DOOR2DOOR_1HELPER_TRUCK550"
+	SpecialRequestDoor2Door2HelperTruck330 SpecialRequest = "DOOR2DOOR_2HELPER_TRUCK330"
+	SpecialRequestDoor2Door2HelperTruck550 SpecialRequest = "DOOR2DOOR_2HELPER_TRUCK550"
+	SpecialRequestCOD                      SpecialRequest = "COD"
+	SpecialRequestPurchaseService          SpecialRequest = "PURCHASE_SERVICE"
+	SpecialRequestPurchaseServiceTier2     SpecialRequest = "PURCHASE_SERVICE_TIER_2"
+	SpecialRequestExtraHelper              SpecialRequest = "EXTRA_HELPER"
+	SpecialRequestExtraHelperTruck175      SpecialRequest = "EXTRA_HELPER_TRUCK175"
+	SpecialRequestRoundtripMotorcycle      SpecialRequest = "ROUNDTRIP_MOTORYCYCLE"
+	SpecialRequestRoundtripTruck175        SpecialRequest = "ROUNDTRIP_TRUCK175"
+	SpecialRequestRoundtripTruck330        SpecialRequest = "ROUNDTRIP_TRUCK330"
+	SpecialRequestQueueingMotorcycle       SpecialRequest = "QUEUEING_MOTORCYCLE"
+	SpecialRequestReturnTrip               SpecialRequest = "RETURNTRIP"
+	SpecialRequestReturnTripLorry          SpecialRequest = "RETURNTRIP_LORRY"
+	SpecialRequestLoadingService           SpecialRequest = "LOADING_SERVICE"
+	SpecialRequestFoodService              SpecialRequest = "FOOD_SERVICE"
+	SpecialRequestDriverCarries            SpecialRequest = "DRIVER_CARRIES"
+	SpecialRequest1Assistant1To2Drops      SpecialRequest = "1ASSISTANT_1_MINUS_2DROPS"
+	SpecialRequest1Assistant3To4Drops      SpecialRequest = "1ASSISTANT_3_MINUS_4DROPS"
+	SpecialRequest1AssistantPlusDrops      SpecialRequest = "1ASSISTANT_5_PLUS_DROPS"
+	SpecialRequestRestricted               SpecialRequest = "RESTRICTED"
+	SpecialRequestMovingDriver             SpecialRequest = "MOVING_DRIVER"
+	SpecialRequestMovingDriver1Helper      SpecialRequest = "MOVING_DRIVER_1HELPER"
+	SpecialRequestMovingDriver2Helper      SpecialRequest = "MOVING_DRIVER_2HELPER"
+	SpecialRequestMovingDriver1HelperVan   SpecialRequest = "MOVING_DRIVER_1HELPER_VAN"
+	SpecialRequestMovingDriver2HelperVan   SpecialRequest = "MOVING_DRIVER_2HELPER_VAN"
+	SpecialRequestTailgate                 SpecialRequest = "TAILGATE"
+	SpecialRequestCovered                  SpecialRequest = "COVERED"
+	SpecialRequestHelpBuy                  SpecialRequest = "HELP_BUY"
+	SpecialRequestGroundFloor1Way          SpecialRequest = "GROUND_FLOOR_ONE_WAY"
+	SpecialRequestGroundFloor1Way2         SpecialRequest = "GROUND_FLOOR_ONE_WAY_2"
+	SpecialRequestUpstairDownstair1Way     SpecialRequest = "UPSTAIR_DOWNSTAIR_ONE_WAY"
+	SpecialRequestUpstairDownstair1Way2    SpecialRequest = "UPSTAIR_DOWNSTAIR_ONE_WAY_2"
+)
 
+// CountryCode ...
 type CountryCode string
+
+// OrderStatus ...
+type OrderStatus string
+
+// OrderStatus enum
+const (
+	// OrderStatusAssigningDriver - Trying to match shipment with a driver.
+	OrderStatusAssigningDriver OrderStatus = "ASSIGNING_DRIVER"
+	// OrderStatusOngoing - A driver has accepted the order.
+	OrderStatusOngoing OrderStatus = "ON_GOING"
+	// OrderStatusPickedUp - The driver has picked up the order.
+	OrderStatusPickedUp OrderStatus = "PICKED_UP"
+	// OrderStatusCompleted - The order has been delivered successfully and transaction has concluded.
+	OrderStatusCompleted OrderStatus = "COMPLETED"
+	// OrderStatusCanceled - User has canceled the order.
+	OrderStatusCanceled OrderStatus = "CANCELED"
+	// OrderStatusRejected - The order was matched and rejected twice by two drivers in a row.
+	OrderStatusRejected OrderStatus = "REJECTED"
+	// OrderStatusExpired - The order expired as no drivers accepted the order.
+	OrderStatusExpired OrderStatus = "EXPIRED"
+)
+
+// Locale ...
+type Locale string
 
 // Locale enum
 const (
-	BrasilEN      Locale = "en_BR"
-	BrasilPT      Locale = "pt_BR"
-	HongKongEN    Locale = "en_HK"
-	HongKongZH    Locale = "zh_HK"
-	IndiaEN       Locale = "en_IN"
-	IndiaHI       Locale = "hi_IN"
-	IndiaKN       Locale = "kn_IN"
-	IndiaMR       Locale = "mr_IN"
-	IndonesiaEN   Locale = "en_ID"
-	IndonesiaID   Locale = "id_ID"
-	MalaysiaEN    Locale = "en_MY"
-	MalaysiaMS    Locale = "ms_MY"
-	MexicoEN      Locale = "en_MX"
-	MexicoMX      Locale = "es_MX"
-	PhilippinesEN Locale = "en_PH"
-	SingaporeEN   Locale = "en_SG"
-	TaiwanZH      Locale = "zh_TW"
-	ThailandEN    Locale = "en_TH"
-	ThailandTH    Locale = "th_TH"
-	VietnamEN     Locale = "en_VN"
-	VietnamVI     Locale = "vi_VN"
+	LocaleBrasilEN      Locale = "en_BR"
+	LocaleBrasilPT      Locale = "pt_BR"
+	LocaleHongKongEN    Locale = "en_HK"
+	LocaleHongKongZH    Locale = "zh_HK"
+	LocaleIndiaEN       Locale = "en_IN"
+	LocaleIndiaHI       Locale = "hi_IN"
+	LocaleIndiaKN       Locale = "kn_IN"
+	LocaleIndiaMR       Locale = "mr_IN"
+	LocaleIndonesiaEN   Locale = "en_ID"
+	LocaleIndonesiaID   Locale = "id_ID"
+	LocaleMalaysiaEN    Locale = "en_MY"
+	LocaleMalaysiaMS    Locale = "ms_MY"
+	LocaleMexicoEN      Locale = "en_MX"
+	LocaleMexicoMX      Locale = "es_MX"
+	LocalePhilippinesEN Locale = "en_PH"
+	LocaleSingaporeEN   Locale = "en_SG"
+	LocaleTaiwanZH      Locale = "zh_TW"
+	LocaleThailandEN    Locale = "en_TH"
+	LocaleThailandTH    Locale = "th_TH"
+	LocaleVietnamEN     Locale = "en_VN"
+	LocaleVietnamVI     Locale = "vi_VN"
 )
 
 // Address ...
@@ -94,44 +193,79 @@ type GetQuotationRequest struct {
 
 // GetQuotationResponse ...
 type GetQuotationResponse struct {
+	AmountCents int64  `json:"totalFee"`
+	Currency    string `json:"totalFeeCurrency"`
 }
 
-// CreateOrderRequest ...
-type CreateOrderRequest struct {
+// Price ...
+type Price struct {
+	AmountCents int64  `json:"amount"`
+	Currency    string `json:"currency"`
 }
 
-// CreateOrderResponse ...
-type CreateOrderResponse struct {
+// PlaceOrderRequest ...
+type PlaceOrderRequest struct {
+	QuotedPrice Price `json:"quotedTotalFee"`
+	// SendSms is set to end delivery updates via SMS to the recipient,
+	// or the recipient of the LAST STOP for multi-stop orders. Defaults to true.
+	SendSms *bool `json:"sms"`
+	GetQuotationRequest
 }
 
-// GetOrderDetailsRequest ...
-type GetOrderDetailsRequest struct {
+// PlaceOrderResponse ...
+type PlaceOrderResponse struct {
+	// OrderID is the order id
+	OrderID string `json:"orderRef"`
+	// CustomerOrderID is a UUID order id (deprecated)
+	CustomerOrderID string `json:"customerOrderId"`
 }
 
-// GetOrderDetailsResponse ...
-type GetOrderDetailsResponse struct {
+// OrderDetailsRequest ...
+type OrderDetailsRequest struct {
+	OrderID string
+}
+
+// OrderDetailsResponse ...
+type OrderDetailsResponse struct {
+	Status   OrderStatus `json:"status"`
+	Price    Price       `json:"price"`
+	DriverID *string     `json:"driverId"`
 }
 
 // CancelOrderRequest ...
 type CancelOrderRequest struct {
+	OrderID string
 }
 
 // CancelOrderResponse ...
-type CancelOrderResponse struct {
+type CancelOrderResponse struct{}
+
+// DriverDetailsRequest ...
+type DriverDetailsRequest struct {
+	OrderID  string
+	DriverID string
 }
 
-// GetDriverDetailsRequest ...
-type GetDriverDetailsRequest struct {
+// DriverDetailsResponse ...
+type DriverDetailsResponse struct {
+	Contact
+	PlateNumber string `json:"plateNumber"`
+	PhotoURL    string `json:"photo"`
 }
 
-// GetDriverDetailsResponse ...
-type GetDriverDetailsResponse struct {
+// DriverLocationRequest ...
+type DriverLocationRequest struct {
+	OrderID  string
+	DriverID string
 }
 
-// GetDriverLocationRequest ...
-type GetDriverLocationRequest struct {
+// DriverLocationResponse ...
+type DriverLocationResponse struct {
+	Location  Location  `json:"location"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }
 
-// GetDriverLocationResponse ...
-type GetDriverLocationResponse struct {
+// ErrorResponse ...
+type ErrorResponse struct {
+	Error string `json:"message"`
 }
