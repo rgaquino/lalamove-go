@@ -3,8 +3,19 @@ package lalamove
 import "errors"
 
 var (
+	errCredentialsMissing = errors.New("API Key credentials missing")
+	errBaseURLMissing     = errors.New("base URL missing")
+)
+
+var (
 	// apiErrUnknownError - Default error
 	apiErrUnknownError = errors.New("ERR_UNKNOWN")
+	// apiErrInvalidCountry - Incorrect country
+	apiErrInvalidCountry = errors.New("ERR_INVALID_COUNTRY")
+	// apiErrInvalidParams - General validation error
+	apiErrInvalidParams = errors.New("ERR_INVALID_PARAMS")
+	// apiErrRequiredField - Missing required fields
+	apiErrRequiredField = errors.New("ERR_REQUIRED_FIELD")
 	// apiErrDeliveryMismatch - Stops and Deliveries mismatch
 	apiErrDeliveryMismatch = errors.New("ERR_DELIVERY_MISMATCH")
 	// apiErrInsufficientStops - Not enough stops, number of stops should be between 2 and 10
@@ -41,6 +52,12 @@ var (
 
 func wrapAPIError(errResp *ErrorResponse) error {
 	switch errResp.Error {
+	case "ERR_INVALID_COUNTRY":
+		return apiErrInvalidCountry
+	case "ERR_INVALID_PARAMS":
+		return apiErrInvalidParams
+	case "ERR_REQUIRED_FIELD":
+		return apiErrRequiredField
 	case "ERR_DELIVERY_MISMATCH":
 		return apiErrDeliveryMismatch
 	case "ERR_INSUFFICIENT_STOPS":

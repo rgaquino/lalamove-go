@@ -80,9 +80,6 @@ const (
 	SpecialRequestUpstairDownstair1Way2    SpecialRequest = "UPSTAIR_DOWNSTAIR_ONE_WAY_2"
 )
 
-// CountryCode ...
-type CountryCode string
-
 // OrderStatus ...
 type OrderStatus string
 
@@ -104,48 +101,20 @@ const (
 	OrderStatusExpired OrderStatus = "EXPIRED"
 )
 
-// Locale ...
-type Locale string
-
-// Locale enum
-const (
-	LocaleBrasilEN      Locale = "en_BR"
-	LocaleBrasilPT      Locale = "pt_BR"
-	LocaleHongKongEN    Locale = "en_HK"
-	LocaleHongKongZH    Locale = "zh_HK"
-	LocaleIndiaEN       Locale = "en_IN"
-	LocaleIndiaHI       Locale = "hi_IN"
-	LocaleIndiaKN       Locale = "kn_IN"
-	LocaleIndiaMR       Locale = "mr_IN"
-	LocaleIndonesiaEN   Locale = "en_ID"
-	LocaleIndonesiaID   Locale = "id_ID"
-	LocaleMalaysiaEN    Locale = "en_MY"
-	LocaleMalaysiaMS    Locale = "ms_MY"
-	LocaleMexicoEN      Locale = "en_MX"
-	LocaleMexicoMX      Locale = "es_MX"
-	LocalePhilippinesEN Locale = "en_PH"
-	LocaleSingaporeEN   Locale = "en_SG"
-	LocaleTaiwanZH      Locale = "zh_TW"
-	LocaleThailandEN    Locale = "en_TH"
-	LocaleThailandTH    Locale = "th_TH"
-	LocaleVietnamEN     Locale = "en_VN"
-	LocaleVietnamVI     Locale = "vi_VN"
-)
-
 // Address ...
 type Address struct {
 	// DisplayString is the street address in plain text. Use remarks in DeliveryInfo for building, floor and flat.
 	DisplayString string
 	// Country is the country code of the address and must match with X-LLM-Country in the request headers.
-	Country CountryCode
+	Country string
 }
 
 // Location ...
 type Location struct {
 	// Lat is the latitude
-	Lat string
+	Lat string `json:"lat"`
 	// Lng is the longitude
-	Lng string
+	Lng string `json:"lng"`
 }
 
 // Waypoint ...
@@ -158,37 +127,37 @@ type Waypoint struct {
 type DeliveryInfo struct {
 	// ToStop is the index of waypoint in stops this information associates with, has to be >= 1
 	// since the first stop's Delivery Info is tided to requesterContact.
-	ToStop int64
+	ToStop int64 `json:"toStop"`
 	// Contact is the contact person at the stop specified in ToStop.
-	Contact Contact
+	Contact Contact `json:"toContact"`
 	// Remarks gives additional info about the delivery. eg. building, floor and flat.
 	// Use newline \r\n for better readability.
-	Remarks *string
+	Remarks *string `json:"remarks,omitempty"`
 }
 
 // Contact ...
 type Contact struct {
 	// Name is the name of the contact person
-	Name string
+	Name string `json:"name"`
 	// Phone must be a valid phone number, validation varies for each country/region.
-	Phone string
+	Phone string `json:"phone"`
 }
 
 // GetQuotationRequest ...
 type GetQuotationRequest struct {
 	// ServiceType is the type of vehicle, availability varies for each country/region.
-	ServiceType ServiceType
+	ServiceType ServiceType `json:"serviceType"`
 	// Stops is an array of Waypoints (minimum 2, maximum 10)
-	Stops []Waypoint
+	Stops []Waypoint `json:"stops"`
 	// Deliveries is an array of DeliveryInfos
-	Deliveries []DeliveryInfo
+	Deliveries []DeliveryInfo `json:"deliveries"`
 	// RequesterContact is the contact person at pick up point aka stop[0].
-	RequesterContact Contact
+	RequesterContact Contact `json:"requesterContact"`
 	// ScheduleAt is the pick up time in UTC timezone and ISO 8601 format.
 	// Omit this field if you are placing an immediate order.
-	ScheduleAt *string
+	ScheduleAt *string `json:"scheduleAt,omitempty"`
 	// SpecialRequests are special requests for the order, availability varies for each country/region.
-	SpecialRequests *[]SpecialRequest
+	SpecialRequests *[]SpecialRequest `json:"specialRequests,omitempty"`
 }
 
 // GetQuotationResponse ...

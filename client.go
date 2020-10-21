@@ -3,16 +3,16 @@ package lalamove
 import (
 	"bytes"
 	"context"
+	"crypto/hmac"
+	"crypto/sha256"
 	"encoding/json"
-	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"strings"
-)
+	"time"
 
-var (
-	errCredentialsMissing = errors.New("API Key credentials missing")
-	errBaseURLMissing     = errors.New("base URL missing")
+	"github.com/twinj/uuid"
 )
 
 // Client may be used to make requests to the Lalamove APIs
@@ -71,19 +71,19 @@ func WithBaseURL(baseURL string) ClientOption {
 	}
 }
 
-func (c *Client) get(ctx context.Context, path string, body interface{}, apiResp interface{}) error {
-	var bodyReader io.Reader
-	if body != nil {
-		bodyStr, err := json.Marshal(body)
-		if err != nil {
-			return err
-		}
-		bytes.NewBuffer(bodyStr)
-	}
-	req, err := http.NewRequest(http.MethodGet, c.baseURL+path, bodyReader)
+func (c *Client) get(ctx context.Context, region UNLOCODE, path string, apiReq interface{}, apiResp interface{}) error {
+	body, bodyBytes, err := marshalRequest(apiReq)
 	if err != nil {
 		return err
 	}
+	req, err := http.NewRequest(http.MethodGet, c.baseURL+path, body)
+	if err != nil {
+		return err
+	}
+	auth := c.generateAuth(http.MethodGet, path, bodyBytes)
+	req.Header.Set("Authorization", auth)
+	req.Header.Set("X-LLM-Country", region.getLLMCountry())
+	req.Header.Set("X-Request-ID", uuid.NewV4().String())
 
 	resp, err := c.do(ctx, req)
 	if err != nil {
@@ -91,29 +91,22 @@ func (c *Client) get(ctx context.Context, path string, body interface{}, apiResp
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode == 409 {
-		errResp := &ErrorResponse{}
-		if err := json.NewDecoder(resp.Body).Decode(errResp); err != nil {
-			return err
-		}
-		return wrapAPIError(errResp)
-	}
-	return json.NewDecoder(resp.Body).Decode(apiResp)
+	return decodeResponse(resp, apiResp)
 }
 
-func (c *Client) post(ctx context.Context, path string, body interface{}, apiResp interface{}) error {
-	var bodyReader io.Reader
-	if body != nil {
-		bodyStr, err := json.Marshal(body)
-		if err != nil {
-			return err
-		}
-		bytes.NewBuffer(bodyStr)
-	}
-	req, err := http.NewRequest(http.MethodPost, c.baseURL+path, bodyReader)
+func (c *Client) post(ctx context.Context, region UNLOCODE, path string, apiReq interface{}, apiResp interface{}) error {
+	body, bodyBytes, err := marshalRequest(apiReq)
 	if err != nil {
 		return err
 	}
+	req, err := http.NewRequest(http.MethodPost, c.baseURL+path, body)
+	if err != nil {
+		return err
+	}
+	auth := c.generateAuth(http.MethodPost, path, bodyBytes)
+	req.Header.Set("Authorization", auth)
+	req.Header.Set("X-LLM-Country", region.getLLMCountry())
+	req.Header.Set("X-Request-ID", uuid.NewV4().String())
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := c.do(ctx, req)
@@ -122,16 +115,7 @@ func (c *Client) post(ctx context.Context, path string, body interface{}, apiRes
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode == 409 {
-		errResp := &ErrorResponse{}
-		if err := json.NewDecoder(resp.Body).Decode(errResp); err != nil {
-			return err
-		}
-		return wrapAPIError(errResp)
-	} else if resp.StatusCode == 429 {
-		return apiErrTooManyRequests
-	}
-	return json.NewDecoder(resp.Body).Decode(apiResp)
+	return decodeResponse(resp, apiResp)
 }
 
 func (c *Client) do(ctx context.Context, req *http.Request) (*http.Response, error) {
@@ -140,4 +124,37 @@ func (c *Client) do(ctx context.Context, req *http.Request) (*http.Response, err
 		client = http.DefaultClient
 	}
 	return client.Do(req.WithContext(ctx))
+}
+
+func (c *Client) generateAuth(method, path string, body []byte) string {
+	now := time.Now().Unix()
+	rawSignature := fmt.Sprintf("%d\r\n%s\r\n%s\r\n\r\n%s", now, method, path, body)
+	mac := hmac.New(sha256.New, []byte(rawSignature))
+	mac.Write([]byte(c.secret))
+	signature := mac.Sum(nil)
+	return fmt.Sprintf("hmac %s:%d:%s", c.apiKey, now, signature)
+}
+
+func marshalRequest(apiReq interface{}) (io.Reader, []byte, error) {
+	if apiReq != nil {
+		return nil, nil, nil
+	}
+	body, err := json.Marshal(apiReq)
+	if err != nil {
+		return nil, nil, err
+	}
+	return bytes.NewBuffer(body), body, nil
+}
+
+func decodeResponse(resp *http.Response, apiResp interface{}) error {
+	if resp.StatusCode == 429 {
+		return apiErrTooManyRequests
+	} else if resp.StatusCode >= 400 {
+		errResp := &ErrorResponse{}
+		if err := json.NewDecoder(resp.Body).Decode(errResp); err != nil {
+			return err
+		}
+		return wrapAPIError(errResp)
+	}
+	return json.NewDecoder(resp.Body).Decode(apiResp)
 }
