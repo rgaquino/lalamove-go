@@ -169,5 +169,8 @@ func decodeResponse(resp *http.Response, apiResp interface{}) error {
 	} else if resp.StatusCode >= 400 {
 		return apiErrUnknownError
 	}
+	if apiResp == nil {
+		return nil
+	}
 	return json.NewDecoder(resp.Body).Decode(apiResp)
 }

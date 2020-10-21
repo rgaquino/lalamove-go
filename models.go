@@ -162,14 +162,14 @@ type GetQuotationRequest struct {
 
 // GetQuotationResponse ...
 type GetQuotationResponse struct {
-	AmountCents string `json:"totalFee"`
-	Currency    string `json:"totalFeeCurrency"`
+	Amount   string `json:"totalFee"`
+	Currency string `json:"totalFeeCurrency"`
 }
 
 // Price ...
 type Price struct {
-	AmountCents int64  `json:"amount"`
-	Currency    string `json:"currency"`
+	Amount   string `json:"amount"`
+	Currency string `json:"currency"`
 }
 
 // PlaceOrderRequest ...
@@ -189,11 +189,6 @@ type PlaceOrderResponse struct {
 	CustomerOrderID string `json:"customerOrderId"`
 }
 
-// OrderDetailsRequest ...
-type OrderDetailsRequest struct {
-	OrderID string
-}
-
 // OrderDetailsResponse ...
 type OrderDetailsResponse struct {
 	Status   OrderStatus `json:"status"`
@@ -201,31 +196,11 @@ type OrderDetailsResponse struct {
 	DriverID *string     `json:"driverId"`
 }
 
-// CancelOrderRequest ...
-type CancelOrderRequest struct {
-	OrderID string
-}
-
-// CancelOrderResponse ...
-type CancelOrderResponse struct{}
-
-// DriverDetailsRequest ...
-type DriverDetailsRequest struct {
-	OrderID  string
-	DriverID string
-}
-
 // DriverDetailsResponse ...
 type DriverDetailsResponse struct {
 	Contact
 	PlateNumber string `json:"plateNumber"`
 	PhotoURL    string `json:"photo"`
-}
-
-// DriverLocationRequest ...
-type DriverLocationRequest struct {
-	OrderID  string
-	DriverID string
 }
 
 // DriverLocationResponse ...
