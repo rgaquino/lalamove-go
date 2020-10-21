@@ -80,7 +80,7 @@ func WithBaseURL(baseURL string) ClientOption {
 	}
 }
 
-func (c *Client) get(ctx context.Context, region UNLOCODE, path string, apiReq interface{}, apiResp interface{}) error {
+func (c *Client) get(ctx context.Context, region CityCode, path string, apiReq interface{}, apiResp interface{}) error {
 	body, bodyBytes, err := marshalRequest(apiReq)
 	if err != nil {
 		return err
@@ -103,7 +103,7 @@ func (c *Client) get(ctx context.Context, region UNLOCODE, path string, apiReq i
 	return decodeResponse(resp, apiResp)
 }
 
-func (c *Client) post(ctx context.Context, region UNLOCODE, path string, apiReq interface{}, apiResp interface{}) error {
+func (c *Client) post(ctx context.Context, region CityCode, path string, apiReq interface{}, apiResp interface{}) error {
 	body, bodyBytes, err := marshalRequest(apiReq)
 	if err != nil {
 		return err
