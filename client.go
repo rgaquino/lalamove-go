@@ -81,58 +81,58 @@ func WithBaseURL(baseURL string) ClientOption {
 }
 
 func (c *Client) get(ctx context.Context, city CityCode, path string, apiReq interface{}, apiResp interface{}) error {
-	body, bodyBytes, err := marshalRequest(apiReq)
+	req, err := c.createRequest(city, http.MethodGet, path, apiReq)
 	if err != nil {
 		return err
 	}
-	req, err := http.NewRequest(http.MethodGet, c.baseURL+path, body)
-	if err != nil {
-		return err
-	}
-	auth := c.generateAuth(http.MethodGet, path, bodyBytes)
-	req.Header.Set("Authorization", auth)
-	req.Header.Set("X-LLM-Country", string(city.GetLLMCountry()))
-	req.Header.Set("X-Request-ID", uuid.NewV4().String())
-
-	resp, err := c.do(ctx, req)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	return decodeResponse(resp, apiResp)
+	return c.do(ctx, req, apiResp)
 }
 
 func (c *Client) post(ctx context.Context, city CityCode, path string, apiReq interface{}, apiResp interface{}) error {
-	body, bodyBytes, err := marshalRequest(apiReq)
+	req, err := c.createRequest(city, http.MethodPost, path, apiReq)
 	if err != nil {
 		return err
 	}
-	req, err := http.NewRequest(http.MethodPost, c.baseURL+path, body)
-	if err != nil {
-		return err
-	}
-	auth := c.generateAuth(http.MethodPost, path, bodyBytes)
-	req.Header.Set("Authorization", auth)
-	req.Header.Set("X-LLM-Country", string(city.GetLLMCountry()))
-	req.Header.Set("X-Request-ID", uuid.NewV4().String())
 	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := c.do(ctx, req)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	return decodeResponse(resp, apiResp)
+	return c.do(ctx, req, apiResp)
 }
 
-func (c *Client) do(ctx context.Context, req *http.Request) (*http.Response, error) {
+func (c *Client) put(ctx context.Context, city CityCode, path string, apiReq interface{}, apiResp interface{}) error {
+	req, err := c.createRequest(city, http.MethodPut, path, apiReq)
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", "application/json")
+	return c.do(ctx, req, apiResp)
+}
+
+func (c *Client) createRequest(city CityCode, method, path string, apiReq interface{}) (*http.Request, error) {
+	body, bodyBytes, err := marshalRequest(apiReq)
+	if err != nil {
+		return nil, err
+	}
+	req, err := http.NewRequest(method, c.baseURL+path, body)
+	if err != nil {
+		return nil, err
+	}
+	auth := c.generateAuth(method, path, bodyBytes)
+	req.Header.Set("Authorization", auth)
+	req.Header.Set("X-Request-ID", uuid.NewV4().String())
+	req.Header.Set("X-LLM-Country", string(city.GetLLMCountry()))
+	return req, nil
+}
+
+func (c *Client) do(ctx context.Context, req *http.Request, apiResp interface{}) error {
 	client := c.httpClient
 	if client == nil {
 		client = http.DefaultClient
 	}
-	return client.Do(req.WithContext(ctx))
+	resp, err := client.Do(req.WithContext(ctx))
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	return decodeResponse(resp, apiResp)
 }
 
 func (c *Client) generateAuth(method, path string, body []byte) string {

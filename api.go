@@ -39,7 +39,7 @@ func (c *Client) OrderDetails(ctx context.Context, city CityCode, orderID string
 // CancelOrder cancels the order based on the Lalamove cancellation policy. Attempts to cancel an order that
 // does not comply with the cancellation policy will get ERR_CANCELLATION_FORBIDDEN as response.
 func (c *Client) CancelOrder(ctx context.Context, city CityCode, orderID string) error {
-	return c.get(ctx, city, fmt.Sprintf("/v2/orders/%s/cancel", orderID), nil, nil)
+	return c.put(ctx, city, fmt.Sprintf("/v2/orders/%s/cancel", orderID), nil, nil)
 }
 
 // DriverDetails retrieves the driver's information.
