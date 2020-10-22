@@ -117,10 +117,13 @@ type Location struct {
 	Lng string `json:"lng"`
 }
 
+// AddressTranslations ...
+type AddressTranslations map[Locale]Address
+
 // Waypoint ...
 type Waypoint struct {
-	Location  Location           `json:"location"`
-	Addresses map[Locale]Address `json:"addresses"`
+	Location  Location            `json:"location"`
+	Addresses AddressTranslations `json:"addresses"`
 }
 
 // DeliveryInfo ...
@@ -194,7 +197,7 @@ type PlaceOrderResponse struct {
 type OrderDetailsResponse struct {
 	Status   OrderStatus `json:"status"`
 	Price    Price       `json:"price"`
-	DriverID *string     `json:"driverId,omitempty"`
+	DriverID string      `json:"driverId"`
 }
 
 // DriverDetailsResponse ...
