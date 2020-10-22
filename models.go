@@ -106,7 +106,7 @@ type Address struct {
 	// DisplayString is the street address in plain text. Use remarks in DeliveryInfo for building, floor and flat.
 	DisplayString string `json:"displayString"`
 	// Country is the country code of the address and must match with X-LLM-Country in the request headers.
-	Country string `json:"country"`
+	Country LLMCountry `json:"country"`
 }
 
 // Location ...
@@ -128,7 +128,8 @@ type DeliveryInfo struct {
 	// ToStop is the index of waypoint in stops this information associates with, has to be >= 1
 	// since the first stop's Delivery Info is tided to requesterContact.
 	ToStop int64 `json:"toStop"`
-	// Contact is the contact person at the stop specified in ToStop.
+	// Contact is the contact person at the stop specified in ToStop. You can provide placeholders to GetQuotation
+	// if the user information is not available and correct it before calling PlaceOrder.
 	Contact Contact `json:"toContact"`
 	// Remarks gives additional info about the delivery. eg. building, floor and flat.
 	// Use newline \r\n for better readability.
@@ -193,7 +194,7 @@ type PlaceOrderResponse struct {
 type OrderDetailsResponse struct {
 	Status   OrderStatus `json:"status"`
 	Price    Price       `json:"price"`
-	DriverID *string     `json:"driverId"`
+	DriverID *string     `json:"driverId,omitempty"`
 }
 
 // DriverDetailsResponse ...

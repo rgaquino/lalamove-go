@@ -12,6 +12,7 @@ type Country struct {
 // CityCode is the UN/LOCODE of supported cities.
 type CityCode string
 
+// CityCode enum
 const (
 	CityCodeBrasilSaoPaulo      CityCode = "BR_SAO"
 	CityCodeBrasilRioDeJaneiro  CityCode = "BR_RIO"
@@ -32,7 +33,13 @@ const (
 	CityCodeVietnamHanoi        CityCode = "VN_HAN"
 )
 
-func (c CityCode) getLLMCountry() string {
+// LLMCountry is the country/region/city where the order is being placed.
+// 1. Hong Kong, Indonesia, Malaysia, Singapore & Taipei should be in ISO 3166-1 alpha-2 format.
+// 2. Countries/regions/cities shou lbe in UN/LOCODE format.
+type LLMCountry string
+
+// GetLLMCountry ...
+func (c CityCode) GetLLMCountry() LLMCountry {
 	switch c {
 	case CityCodeHongKongHongKong,
 		CityCodeIndonesiaJakarata,
@@ -40,9 +47,9 @@ func (c CityCode) getLLMCountry() string {
 		CityCodeSingaporeSingapore,
 		CityCodeTaiwanTaipei:
 		country := c.GetCountry()
-		return string(country.Code)
+		return LLMCountry(country.Code)
 	default:
-		return string(c)
+		return LLMCountry(c)
 	}
 }
 
@@ -75,9 +82,10 @@ func (c CityCode) GetCountry() Country {
 	return CountryUnknown
 }
 
-// // CityCode is the ISO 3166-1 alpha-2 of supported countries and regions.
+// CountryCode is the ISO 3166-1 alpha-2 of supported countries and regions.
 type CountryCode string
 
+// CountryCode enum
 const (
 	CountryCodeBrasil      CountryCode = "BR"
 	CountryCodeHongKong    CountryCode = "HK"

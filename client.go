@@ -80,7 +80,7 @@ func WithBaseURL(baseURL string) ClientOption {
 	}
 }
 
-func (c *Client) get(ctx context.Context, region CityCode, path string, apiReq interface{}, apiResp interface{}) error {
+func (c *Client) get(ctx context.Context, city CityCode, path string, apiReq interface{}, apiResp interface{}) error {
 	body, bodyBytes, err := marshalRequest(apiReq)
 	if err != nil {
 		return err
@@ -91,7 +91,7 @@ func (c *Client) get(ctx context.Context, region CityCode, path string, apiReq i
 	}
 	auth := c.generateAuth(http.MethodGet, path, bodyBytes)
 	req.Header.Set("Authorization", auth)
-	req.Header.Set("X-LLM-Country", region.getLLMCountry())
+	req.Header.Set("X-LLM-Country", string(city.GetLLMCountry()))
 	req.Header.Set("X-Request-ID", uuid.NewV4().String())
 
 	resp, err := c.do(ctx, req)
@@ -103,7 +103,7 @@ func (c *Client) get(ctx context.Context, region CityCode, path string, apiReq i
 	return decodeResponse(resp, apiResp)
 }
 
-func (c *Client) post(ctx context.Context, region CityCode, path string, apiReq interface{}, apiResp interface{}) error {
+func (c *Client) post(ctx context.Context, city CityCode, path string, apiReq interface{}, apiResp interface{}) error {
 	body, bodyBytes, err := marshalRequest(apiReq)
 	if err != nil {
 		return err
@@ -114,7 +114,7 @@ func (c *Client) post(ctx context.Context, region CityCode, path string, apiReq 
 	}
 	auth := c.generateAuth(http.MethodPost, path, bodyBytes)
 	req.Header.Set("Authorization", auth)
-	req.Header.Set("X-LLM-Country", region.getLLMCountry())
+	req.Header.Set("X-LLM-Country", string(city.GetLLMCountry()))
 	req.Header.Set("X-Request-ID", uuid.NewV4().String())
 	req.Header.Set("Content-Type", "application/json")
 
@@ -157,9 +157,9 @@ func marshalRequest(apiReq interface{}) (io.Reader, []byte, error) {
 
 func decodeResponse(resp *http.Response, apiResp interface{}) error {
 	if resp.StatusCode == 429 {
-		return apiErrTooManyRequests
+		return errTooManyRequests
 	} else if resp.StatusCode == 401 {
-		return apiErrUnauthorized
+		return errUnauthorized
 	} else if resp.StatusCode == 402 || resp.StatusCode == 409 {
 		errResp := &ErrorResponse{}
 		if err := json.NewDecoder(resp.Body).Decode(errResp); err != nil {
@@ -167,7 +167,7 @@ func decodeResponse(resp *http.Response, apiResp interface{}) error {
 		}
 		return wrapAPIError(errResp)
 	} else if resp.StatusCode >= 400 {
-		return apiErrUnknownError
+		return errUnknownError
 	}
 	if apiResp == nil {
 		return nil

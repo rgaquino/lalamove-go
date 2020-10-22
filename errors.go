@@ -8,88 +8,88 @@ var (
 )
 
 var (
-	// apiErrUnknownError - Default error
-	apiErrUnknownError = errors.New("ERR_UNKNOWN")
-	// apiErrInvalidCountry - Incorrect country
-	apiErrInvalidCountry = errors.New("ERR_INVALID_COUNTRY")
-	// apiErrInvalidParams - General validation error
-	apiErrInvalidParams = errors.New("ERR_INVALID_PARAMS")
-	// apiErrRequiredField - Missing required fields
-	apiErrRequiredField = errors.New("ERR_REQUIRED_FIELD")
-	// apiErrDeliveryMismatch - Stops and Deliveries mismatch
-	apiErrDeliveryMismatch = errors.New("ERR_DELIVERY_MISMATCH")
-	// apiErrInsufficientStops - Not enough stops, number of stops should be between 2 and 10
-	apiErrInsufficientStops = errors.New("ERR_INSUFFICIENT_STOPS")
-	// apiErrTooManyStops - Reached maximum stops, Number of stops should be between 2 and 10
-	apiErrTooManyStops = errors.New("ERR_TOO_MANY_STOPS")
-	// apiErrInvalidPaymentMethod - Invalid payment method
-	apiErrInvalidPaymentMethod = errors.New("ERR_INVALID_PAYMENT_METHOD")
-	// apiErrInvalidLocale - Invalid locale
-	apiErrInvalidLocale = errors.New("ERR_INVALID_LOCALE")
-	// apiErrInvalidPhoneNumber - Invalid phone number
-	apiErrInvalidPhoneNumber = errors.New("ERR_INVALID_PHONE_NUMBER")
-	// apiErrInvalidScheduleTime - scheduleAt datetime is in the past
-	apiErrInvalidScheduleTime = errors.New("ERR_INVALID_SCHEDULE_TIME")
-	// apiErrInvalidServiceType - No such service type, make sure to stick to service types that are available for the country/region
-	apiErrInvalidServiceType = errors.New("ERR_INVALID_SERVICE_TYPE")
-	// apiErrInvalidSpecialRequest - No such special request(s), make sure that special requests match with selected service type
-	apiErrInvalidSpecialRequest = errors.New("ERR_INVALID_SPECIAL_REQUEST")
-	// apiErrOutOfServiceArea - Out of service area
-	apiErrOutOfServiceArea = errors.New("ERR_OUT_OF_SERVICE_AREA")
-	// apiErrReverseGeocodeFailure - Fail to reverse from address to location, provide lat and lng
-	apiErrReverseGeocodeFailure = errors.New("ERR_REVERSE_GEOCODE_FAILURE")
-	// apiErrInsufficientCredit - You have insufficient credit, top up your wallet
-	apiErrInsufficientCredit = errors.New("ERR_INSUFFICIENT_CREDIT")
-	// apiErrInvalidCurrency - The currency you provided is not a valid currency
-	apiErrInvalidCurrency = errors.New("ERR_INVALID_CURRENCY")
-	// apiErrPriceMismatch - The amount or currency you provided in quotedTotalFee doesn't match quotation
-	apiErrPriceMismatch = errors.New("ERR_PRICE_MISMATCH")
-	// apiErrCancellationForbidden - Cancellation Forbidden
-	apiErrCancellationForbidden = errors.New("ERR_CANCELLATION_FORBIDDEN")
-	// apiErrTooManyRequests - Too many requests were made
-	apiErrTooManyRequests = errors.New("ERR_TOO_MANY_REQUESTS")
-	// apiErrUnauthorized - The provided authorization token is wrong
-	apiErrUnauthorized = errors.New("ERR_UNAUTHORIZED")
+	// errUnknownError - Default error
+	errUnknownError = errors.New("ERR_UNKNOWN")
+	// errInvalidCountry - Incorrect country
+	errInvalidCountry = errors.New("ERR_INVALID_COUNTRY")
+	// errInvalidParams - General validation error
+	errInvalidParams = errors.New("ERR_INVALID_PARAMS")
+	// errRequiredField - Missing required fields
+	errRequiredField = errors.New("ERR_REQUIRED_FIELD")
+	// errDeliveryMismatch - Stops and Deliveries mismatch
+	errDeliveryMismatch = errors.New("ERR_DELIVERY_MISMATCH")
+	// errInsufficientStops - Not enough stops, number of stops should be between 2 and 10
+	errInsufficientStops = errors.New("ERR_INSUFFICIENT_STOPS")
+	// errTooManyStops - Reached maximum stops, Number of stops should be between 2 and 10
+	errTooManyStops = errors.New("ERR_TOO_MANY_STOPS")
+	// errInvalidPaymentMethod - Invalid payment method
+	errInvalidPaymentMethod = errors.New("ERR_INVALID_PAYMENT_METHOD")
+	// errInvalidLocale - Invalid locale
+	errInvalidLocale = errors.New("ERR_INVALID_LOCALE")
+	// errInvalidPhoneNumber - Invalid phone number
+	errInvalidPhoneNumber = errors.New("ERR_INVALID_PHONE_NUMBER")
+	// errInvalidScheduleTime - scheduleAt datetime is in the past
+	errInvalidScheduleTime = errors.New("ERR_INVALID_SCHEDULE_TIME")
+	// errInvalidServiceType - No such service type, make sure to stick to service types that are available for the country/region
+	errInvalidServiceType = errors.New("ERR_INVALID_SERVICE_TYPE")
+	// errInvalidSpecialRequest - No such special request(s), make sure that special requests match with selected service type
+	errInvalidSpecialRequest = errors.New("ERR_INVALID_SPECIAL_REQUEST")
+	// errOutOfServiceArea - Out of service area
+	errOutOfServiceArea = errors.New("ERR_OUT_OF_SERVICE_AREA")
+	// errReverseGeocodeFailure - Fail to reverse from address to location, provide lat and lng
+	errReverseGeocodeFailure = errors.New("ERR_REVERSE_GEOCODE_FAILURE")
+	// errInsufficientCredit - You have insufficient credit, top up your wallet
+	errInsufficientCredit = errors.New("ERR_INSUFFICIENT_CREDIT")
+	// errInvalidCurrency - The currency you provided is not a valid currency
+	errInvalidCurrency = errors.New("ERR_INVALID_CURRENCY")
+	// errPriceMismatch - The amount or currency you provided in quotedTotalFee doesn't match quotation
+	errPriceMismatch = errors.New("ERR_PRICE_MISMATCH")
+	// errCancellationForbidden - Cancellation Forbidden
+	errCancellationForbidden = errors.New("ERR_CANCELLATION_FORBIDDEN")
+	// errTooManyRequests - Too many requests were made
+	errTooManyRequests = errors.New("ERR_TOO_MANY_REQUESTS")
+	// errUnauthorized - The provided authorization token is wrong
+	errUnauthorized = errors.New("ERR_UNAUTHORIZED")
 )
 
 func wrapAPIError(errResp *ErrorResponse) error {
 	switch errResp.Error {
 	case "ERR_INVALID_COUNTRY":
-		return apiErrInvalidCountry
+		return errInvalidCountry
 	case "ERR_INVALID_PARAMS":
-		return apiErrInvalidParams
+		return errInvalidParams
 	case "ERR_REQUIRED_FIELD":
-		return apiErrRequiredField
+		return errRequiredField
 	case "ERR_DELIVERY_MISMATCH":
-		return apiErrDeliveryMismatch
+		return errDeliveryMismatch
 	case "ERR_INSUFFICIENT_STOPS":
-		return apiErrInsufficientStops
+		return errInsufficientStops
 	case "ERR_TOO_MANY_STOPS":
-		return apiErrTooManyStops
+		return errTooManyStops
 	case "ERR_INVALID_PAYMENT_METHOD":
-		return apiErrInvalidPaymentMethod
+		return errInvalidPaymentMethod
 	case "ERR_INVALID_LOCALE":
-		return apiErrInvalidLocale
+		return errInvalidLocale
 	case "ERR_INVALID_PHONE_NUMBER":
-		return apiErrInvalidPhoneNumber
+		return errInvalidPhoneNumber
 	case "ERR_INVALID_SCHEDULE_TIME":
-		return apiErrInvalidScheduleTime
+		return errInvalidScheduleTime
 	case "ERR_INVALID_SERVICE_TYPE":
-		return apiErrInvalidServiceType
+		return errInvalidServiceType
 	case "ERR_INVALID_SPECIAL_REQUEST":
-		return apiErrInvalidSpecialRequest
+		return errInvalidSpecialRequest
 	case "ERR_OUT_OF_SERVICE_AREA":
-		return apiErrOutOfServiceArea
+		return errOutOfServiceArea
 	case "ERR_REVERSE_GEOCODE_FAILURE":
-		return apiErrReverseGeocodeFailure
+		return errReverseGeocodeFailure
 	case "ERR_INSUFFICIENT_CREDIT":
-		return apiErrInsufficientCredit
+		return errInsufficientCredit
 	case "ERR_INVALID_CURRENCY":
-		return apiErrInvalidCurrency
+		return errInvalidCurrency
 	case "ERR_PRICE_MISMATCH":
-		return apiErrPriceMismatch
+		return errPriceMismatch
 	case "ERR_CANCELLATION_FORBIDDEN":
-		return apiErrCancellationForbidden
+		return errCancellationForbidden
 	}
-	return apiErrUnknownError
+	return errUnknownError
 }
