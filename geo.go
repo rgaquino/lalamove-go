@@ -142,7 +142,7 @@ var (
 	}
 	CountryHongKong = Country{
 		Name:       "Hong Kong",
-		Code:       CountryCodeBrasil,
+		Code:       CountryCodeHongKong,
 		Cities:     []CityCode{CityCodeHongKongHongKong},
 		PhoneRegex: "^((?!999)([2-9][0-9]{7}))$",
 		Locales:    []Locale{LocaleHongKongEN, LocaleHongKongZH},
