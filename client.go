@@ -8,12 +8,11 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"github.com/google/uuid"
 	"io"
 	"net/http"
 	"strings"
 	"time"
-
-	"github.com/twinj/uuid"
 )
 
 // Client may be used to make requests to the Lalamove APIs
@@ -117,7 +116,7 @@ func (c *Client) createRequest(city CityCode, method, path string, apiReq interf
 	}
 	auth := c.generateAuth(method, path, bodyBytes)
 	req.Header.Set("Authorization", auth)
-	req.Header.Set("X-Request-ID", uuid.NewV4().String())
+	req.Header.Set("X-Request-ID", uuid.NewString())
 	req.Header.Set("X-LLM-Country", string(city.GetLLMCountry()))
 	return req, nil
 }
