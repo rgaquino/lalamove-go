@@ -7,7 +7,7 @@ Unofficial Go Client SDK for the [Lalamove APIs](https://developers.lalamove.com
 To install, please execute the following `go get` command.
 
 ```
-go get github.com/rgaquino/lalamove-go
+go get github.com/peelz/lalamove-go
 ```
 
 ## Sample Usage
@@ -20,7 +20,7 @@ import (
     "fmt"
     "log"
     
-    "github.com/rgaquino/lalamove-go"
+    "github.com/peelz/lalamove-go"
 )
 
 func main() {

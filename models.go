@@ -193,11 +193,18 @@ type PlaceOrderResponse struct {
 	CustomerOrderID string `json:"customerOrderId"`
 }
 
+type Distance struct {
+	Text  string `json:"text"`
+	Value int    `json:"value"`
+}
+
 // OrderDetailsResponse ...
 type OrderDetailsResponse struct {
-	Status   OrderStatus `json:"status"`
-	Price    Price       `json:"price"`
-	DriverID string      `json:"driverId"`
+	Status    OrderStatus `json:"status"`
+	ShareLink string      `json:"shareLink"`
+	Price     Price       `json:"price"`
+	DriverID  string      `json:"driverId"`
+	Distance  Distance    `json:"distance"`
 }
 
 // DriverDetailsResponse ...
